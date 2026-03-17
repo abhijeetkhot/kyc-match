@@ -19,6 +19,9 @@ public class NameMatcherService {
     }
 
     public MatchScore match(String customerName, String kycName) {
+        if (customerName == null || kycName == null) {
+            return new MatchScore(false, false);
+        }
         String normalized1 = normalize(customerName);
         String normalized2 = normalize(kycName);
 

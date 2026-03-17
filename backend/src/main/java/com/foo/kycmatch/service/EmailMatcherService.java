@@ -19,6 +19,9 @@ public class EmailMatcherService {
     }
 
     public MatchScore match(String customerEmail, String kycEmail) {
+        if (customerEmail == null || kycEmail == null) {
+            return new MatchScore(false, false);
+        }
         String e1 = customerEmail.toLowerCase();
         String e2 = kycEmail.toLowerCase();
 

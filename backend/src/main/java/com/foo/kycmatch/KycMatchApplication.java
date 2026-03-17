@@ -7,6 +7,8 @@ import com.foo.kycmatch.model.MatchResult;
 import com.foo.kycmatch.report.CsvReportWriter;
 import com.foo.kycmatch.service.DataLoaderService;
 import com.foo.kycmatch.service.MatchingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +17,8 @@ import java.util.List;
 
 @SpringBootApplication
 public class KycMatchApplication implements CommandLineRunner {
+
+    private static final Logger log = LoggerFactory.getLogger(KycMatchApplication.class);
 
     private final AppConfig config;
     private final DataLoaderService dataLoader;
@@ -40,12 +44,12 @@ public class KycMatchApplication implements CommandLineRunner {
         List<Customer> customers = dataLoader.loadCustomers(config.getCustomersFilePath());
         List<KycRecord> kycRecords = dataLoader.loadKycRecords(config.getKycFilePath());
 
-        System.out.printf("Loaded %d customers and %d KYC records%n", customers.size(), kycRecords.size());
+        log.info("Loaded {} customers and {} KYC records", customers.size(), kycRecords.size());
 
         List<MatchResult> results = matchingService.match(customers, kycRecords);
 
         csvReportWriter.write(results, config.getOutputFilePath());
 
-        System.out.printf("Report written to: %s (%d rows)%n", config.getOutputFilePath(), results.size());
+        log.info("Report written to: {} ({} rows)", config.getOutputFilePath(), results.size());
     }
 }

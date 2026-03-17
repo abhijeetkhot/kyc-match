@@ -1,13 +1,18 @@
 package com.foo.kycmatch.service;
 
 import com.foo.kycmatch.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MatchingService {
+
+    private static final Logger log = LoggerFactory.getLogger(MatchingService.class);
 
     private final NameMatcherService nameMatcher;
     private final EmailMatcherService emailMatcher;
@@ -32,9 +37,21 @@ public class MatchingService {
     }
 
     private MatchResult matchCustomer(Customer customer, List<KycRecord> kycRecords) {
+        if (customer.ssnLast4() == null) {
+            return new MatchResult(customer.id(), null, MatchStatus.NEEDS_REVIEW,
+                    "", "", "Customer SSN is missing; cannot verify identity",
+                    true, "MISSING_CUSTOMER_SSN");
+        }
+
+        if (customer.dob() == null) {
+            return new MatchResult(customer.id(), null, MatchStatus.NEEDS_REVIEW,
+                    "", "", "Customer DOB is missing; cannot verify identity",
+                    true, "MISSING_CUSTOMER_DOB");
+        }
+
         // Hard gate 1: SSN
         List<KycRecord> ssnCandidates = kycRecords.stream()
-                .filter(k -> k.ssnLast4().equals(customer.ssnLast4()))
+                .filter(k -> k.ssnLast4() != null && k.ssnLast4().equals(customer.ssnLast4()))
                 .toList();
 
         if (ssnCandidates.isEmpty()) {
@@ -63,6 +80,13 @@ public class MatchingService {
             );
         }
 
+        if (dobCandidates.size() > 1) {
+            List<String> ids = dobCandidates.stream()
+                    .map(KycRecord::verificationId).collect(Collectors.toList());
+            log.warn("Customer {} has {} KYC records passing hard gates (possible duplicate): {}",
+                    customer.id(), dobCandidates.size(), ids);
+        }
+
         // Score soft fields against each candidate that passed hard gates; take best result
         MatchResult best = null;
         for (KycRecord kyc : dobCandidates) {
@@ -83,13 +107,13 @@ public class MatchingService {
         List<String> matchedFields  = new ArrayList<>(List.of("ssn_last4", "dob"));
         List<String> divergedFields = new ArrayList<>();
 
-        if (nameScore.exactMatch()) {
+        if (nameScore.isMatch()) {
             matchedFields.add("name");
         } else {
             divergedFields.add("name");
         }
 
-        if (emailScore.exactMatch()) {
+        if (emailScore.isMatch()) {
             matchedFields.add("email");
         } else {
             divergedFields.add("email");
@@ -99,6 +123,8 @@ public class MatchingService {
 
         List<String> risks = riskEvaluator.evaluate(customer, kyc, status, emailScore);
         boolean riskFlag = !risks.isEmpty();
+
+        log.debug("Customer {} → {} [{}] risk={}", customer.id(), kyc.verificationId(), status, riskFlag);
 
         return new MatchResult(
                 customer.id(),
