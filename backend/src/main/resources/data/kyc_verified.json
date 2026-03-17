@@ -1,0 +1,9 @@
+[
+  {"verification_id": "KYC-A", "full_name": "James Sullivan", "email": "jsullivan@gmail.com", "dob": "1985-03-12", "ssn_last4": "4821", "status": "verified"},
+  {"verification_id": "KYC-B", "full_name": "Priya Nair", "email": "priya.n@outlook.com", "dob": "1991-07-04", "ssn_last4": "3309", "status": "verified"},
+  {"verification_id": "KYC-C", "full_name": "Bob Chen", "email": "rchen88@yahoo.com", "dob": "1988-11-22", "ssn_last4": "7754", "status": "verified"},
+  {"verification_id": "KYC-D", "full_name": "Amanda Torres", "email": "amandatorres@gmail.com", "dob": "1995-01-30", "ssn_last4": "0000", "status": "flagged"},
+  {"verification_id": "KYC-E", "full_name": "David Kim", "email": "david.kim.personal@gmail.com", "dob": "1979-08-15", "ssn_last4": "9901", "status": "verified"},
+  {"verification_id": "KYC-F", "full_name": "Sarah Johnson", "email": "sejohnson@proton.me", "dob": "1990-05-09", "ssn_last4": "2278", "status": "verified"},
+  {"verification_id": "KYC-G", "full_name": "Mike Patel", "email": "mpatel_fake@scam.io", "dob": "1990-12-01", "ssn_last4": "5543", "status": "verified"}
+]

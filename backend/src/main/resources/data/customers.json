@@ -1,0 +1,9 @@
+[
+  {"id": "MC-001", "name": "James R. Sullivan", "email": "jsullivan@gmail.com", "dob": "1985-03-12", "ssn_last4": "4821"},
+  {"id": "MC-002", "name": "Priya Nair", "email": "priya.nair@outlook.com", "dob": "1991-07-04", "ssn_last4": "3309"},
+  {"id": "MC-003", "name": "Robert Chen", "email": "rchen88@yahoo.com", "dob": "1988-11-22", "ssn_last4": "7754"},
+  {"id": "MC-004", "name": "Amanda J. Torres", "email": "amandatorres@gmail.com", "dob": "1995-01-30", "ssn_last4": "6612"},
+  {"id": "MC-005", "name": "David Kim", "email": "dkim.work@gmail.com", "dob": "1979-08-15", "ssn_last4": "9901"},
+  {"id": "MC-006", "name": "Sarah E. Johnson", "email": "sejohnson@proton.me", "dob": "1983-05-09", "ssn_last4": "2278"},
+  {"id": "MC-007", "name": "Michael Patel", "email": "m.patel@gmail.com", "dob": "1990-12-01", "ssn_last4": "5543"}
+]

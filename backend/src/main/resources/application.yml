@@ -1,0 +1,16 @@
+kyc:
+  customers-file-path: data/customers.json
+  kyc-file-path: data/kyc_verified.json
+  output-file-path: output/kyc_match_report.csv
+  fuzzy:
+    name-score-threshold: 0.20
+    email-score-threshold: 0.35
+  risk:
+    suspicious-domains:
+      - scam.io
+      - tempmail.com
+      - mailinator.com
+
+spring:
+  main:
+    banner-mode: off
