@@ -148,6 +148,13 @@ class MatchingServiceTest {
     }
 
     @Test
+    void givenFuzzyEmailMatch_whenMatch_thenEmailInMatchedFieldsNotDiverged() {
+        MatchResult result = matchSingle("MC-002"); // name exact, email fuzzy (priya.nair vs priya.n)
+        assertTrue(result.matchedFields().contains("email"));
+        assertFalse(result.divergedFields().contains("email"));
+    }
+
+    @Test
     void givenConfirmedMatch_whenMatch_thenMatchedFieldsContainsAllFour() {
         MatchResult result = matchSingle("MC-001"); // MC-001 → KYC-A: all four fields match
         String matched = result.matchedFields();

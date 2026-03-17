@@ -3,6 +3,8 @@ package com.foo.kycmatch.report;
 import com.foo.kycmatch.exception.ReportWriteException;
 import com.foo.kycmatch.model.MatchResult;
 import com.opencsv.CSVWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -13,6 +15,8 @@ import java.util.List;
 @Component
 public class CsvReportWriter {
 
+    private static final Logger log = LoggerFactory.getLogger(CsvReportWriter.class);
+
     private static final String[] HEADER = {
             "customer_id", "kyc_verification_id", "match_status",
             "matched_fields", "diverged_fields", "reasoning",
@@ -22,8 +26,9 @@ public class CsvReportWriter {
     public void write(List<MatchResult> results, String outputFilePath) {
         File outputFile = new File(outputFilePath);
         File parent = outputFile.getParentFile();
-        if (parent != null) {
-            parent.mkdirs();
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw new ReportWriteException(
+                    "Failed to create output directory: " + parent.getAbsolutePath(), null);
         }
 
         try (CSVWriter writer = new CSVWriter(new FileWriter(outputFile))) {
@@ -34,6 +39,7 @@ public class CsvReportWriter {
         } catch (IOException e) {
             throw new ReportWriteException("Failed to write CSV report to: " + outputFilePath, e);
         }
+        log.info("Wrote {} rows to {}", results.size(), outputFilePath);
     }
 
     private String[] toRow(MatchResult r) {
